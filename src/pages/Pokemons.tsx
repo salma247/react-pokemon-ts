@@ -12,7 +12,10 @@ function Pokemons() {
 
   const { data, status, error } = useQuery<TPokemons[], Error>(
     "pokemons",
-    () => fetchPokemons()
+    () => fetchPokemons(),
+    {
+      staleTime: 1000 * 60 * 5,
+    }
   );
 
   useLayoutEffect(() => {

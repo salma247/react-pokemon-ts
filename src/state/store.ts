@@ -16,7 +16,7 @@ export const useFavoritesStore = create<FavoritesStore>((set) => {
       set((state) => {
         const updatedFavorites = state.favorites.includes(favorite)
           ? state.favorites.filter((f) => f !== favorite)
-          : [...state.favorites, favorite];
+          : state.favorites.concat(favorite);
 
         // Update local storage whenever favorites change
         localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
