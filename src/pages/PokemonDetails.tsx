@@ -1,40 +1,46 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import {
-  Typography,
   Card,
-  CardHeader,
   CardContent,
+  CardHeader,
+  CardMedia,
   Divider,
   Grid,
-  CardMedia,
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
-import { useAppDispatch, RootState } from "../redux/store";
-import { fetchPokemon } from "../redux/thunks";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+
+const fetchPokemon = async (pokemonName: string) => {
+  const response = await fetch(
+    `${process.env.REACT_APP_API_URL}/${pokemonName}`
+  );
+  const data = await response.json();
+  return data;
+};
 
 function PokemonDetails() {
-  // Get the pokemon name from the URL Last part
   const pokemonName = useParams<{ pokemon: string }>().pokemon;
 
-  const dispatch = useAppDispatch();
-  const { pokemon, loading, error } = useSelector(
-    (state: RootState) => state.pokemon
+  useEffect(() => {
+    if (!pokemonName) return;
+    fetchPokemon(pokemonName);
+  }, [pokemonName]);
+
+  const { data: pokemon, status, error } = useQuery<TPokemon, Error>(
+    ["pokemon", pokemonName],
+    () => fetchPokemon(pokemonName as string)
   );
 
-  useEffect(() => {
-    dispatch(fetchPokemon(pokemonName as string));
-  }, [dispatch, pokemonName]);
-
-  if (loading) {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
+  if (status === "error") {
+    return <div>Error: {error?.message}</div>;
   }
 
   return (

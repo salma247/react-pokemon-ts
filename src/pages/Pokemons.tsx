@@ -1,22 +1,23 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useAppDispatch, RootState } from "../redux/store";
-import { fetchPokemons } from "../redux/thunks";
 import { Typography } from "@mui/material";
-import { FixedSizeGrid as GridList } from "react-window";
+import { useEffect, useLayoutEffect, useState } from "react";
 import AutoSizer from "react-virtualized-auto-sizer";
-import Card from "./Card";
+import { FixedSizeGrid as GridList } from "react-window";
+import Card from "../components/Card";
+import { useQuery } from "react-query";
 
-function Home() {
+const fetchPokemons = async () => {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}?limit=100`);
+  const data = await response.json();
+  return data.results;
+};
+
+function Pokemons() {
   const [columns, setColumns] = useState(4);
-  const dispatch = useAppDispatch();
-  const { pokemons, loading, error } = useSelector(
-    (state: RootState) => state.pokemon
-  );
 
-  useEffect(() => {
-    dispatch(fetchPokemons());
-  }, [dispatch]);
+  const { data, status, error } = useQuery<TPokemons[], Error>(
+    "pokemons",
+    fetchPokemons
+  );
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -29,7 +30,7 @@ function Home() {
       } else {
         setColumns(4);
       }
-    }
+    };
 
     window.addEventListener("resize", handleResize);
 
@@ -38,7 +39,7 @@ function Home() {
 
   const renderItem = ({ columnIndex, rowIndex, style }: any) => {
     const index = rowIndex * columns + columnIndex;
-    const pokemon = pokemons[index];
+    const pokemon = data?.[index];
 
     if (!pokemon) return null;
 
@@ -57,34 +58,38 @@ function Home() {
         Pokemons
       </Typography>
 
-      {loading && (
+      {status === "loading" && (
         <Typography variant="h2" component="h2" align="center">
           Loading...
         </Typography>
       )}
 
-      {error && (
+      {status === "error" && (
         <Typography variant="h2" component="h2" align="center">
-          {error}
+          {error.message}
         </Typography>
       )}
 
       <AutoSizer style={{ width: "100%", height: "100vh" }}>
-        {({ height, width }: { height: number; width: number }) => (
-          <GridList
-            height={height}
-            width={width}
-            columnCount={columns}
-            columnWidth={width / columns}
-            rowCount={Math.ceil(pokemons.length / columns)}
-            rowHeight={100}
-          >
-            {renderItem}
-          </GridList>
-        )}
+        {({ height, width }: { height: number; width: number }) => {
+          const totalItems = data?.length || 0; // Use optional chaining and provide a default value
+
+          return (
+            <GridList
+              height={height}
+              width={width}
+              columnCount={columns}
+              columnWidth={width / columns}
+              rowCount={Math.ceil(totalItems / columns)}
+              rowHeight={100}
+            >
+              {renderItem}
+            </GridList>
+          );
+        }}
       </AutoSizer>
     </div>
   );
 }
 
-export default Home;
+export default Pokemons;

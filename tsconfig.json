@@ -21,6 +21,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/pages/Pokemons.tsx",
+    "src/pages/PokemonDetails.tsx"
   ]
 }
