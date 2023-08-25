@@ -1,3 +1,4 @@
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -10,29 +11,23 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
+import { fetchPokemon } from "../lib/pokemonFetching";
+import { useFavoritesStore } from "../state/store";
 
-const fetchPokemon = async (pokemonName: string) => {
-  const response = await fetch(
-    `${process.env.REACT_APP_API_URL}/${pokemonName}`
-  );
-  const data = await response.json();
-  return data;
-};
+
 
 function PokemonDetails() {
   const pokemonName = useParams<{ pokemon: string }>().pokemon;
+  const favoritesStore = useFavoritesStore();
 
-  useEffect(() => {
-    if (!pokemonName) return;
-    fetchPokemon(pokemonName);
-  }, [pokemonName]);
-
-  const { data: pokemon, status, error } = useQuery<TPokemon, Error>(
-    ["pokemon", pokemonName],
-    () => fetchPokemon(pokemonName as string)
+  const {
+    data: pokemon,
+    status,
+    error,
+  } = useQuery<TPokemon, Error>(["pokemon", pokemonName], () =>
+    fetchPokemon(pokemonName as string)
   );
 
   if (status === "loading") {
@@ -45,7 +40,26 @@ function PokemonDetails() {
 
   return (
     <Card sx={{ maxWidth: 500, margin: "16px auto" }}>
-      <CardHeader title={pokemon?.name} />
+      <CardHeader
+        title={
+          <Typography variant="h5" component="h2">
+            {pokemon?.name}
+          </Typography>
+        }
+        action={
+          favoritesStore.favorites.includes(pokemon?.name as string) ? (
+            <Favorite
+              color="error"
+              onClick={() => favoritesStore.toggle(pokemon?.name as string)}
+            />
+          ) : (
+            <FavoriteBorder
+              color="error"
+              onClick={() => favoritesStore.toggle(pokemon?.name as string)}
+            />
+          )
+        }
+      />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={8}>

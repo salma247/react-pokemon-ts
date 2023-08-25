@@ -1,19 +1,28 @@
 import { Typography } from "@mui/material";
 import { useLayoutEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQueries } from "react-query";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
-import Navbar from "../components/Navbar";
-import { fetchPokemons } from "../lib/pokemonFetching";
+import { fetchPokemon } from "../lib/pokemonFetching";
+import { useFavoritesStore } from "../state/store";
 
-function Pokemons() {
+
+
+function PokemonsFav() {
   const [columns, setColumns] = useState(1);
+  const favoritesStore = useFavoritesStore();
 
-  const { data, status, error } = useQuery<TPokemons[], Error>(
-    "pokemons",
-    () => fetchPokemons()
+  const favorites = favoritesStore.favorites;
+
+  const queries = useQueries(
+    favorites.map((pokemonName) => ({
+      queryKey: ["pokemon", pokemonName],
+      queryFn: () => fetchPokemon(pokemonName),
+    }))
   );
+
+  const data = queries.map((q) => q.data);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -44,7 +53,6 @@ function Pokemons() {
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", height: "100vh", padding: 16 }}>
-      <Navbar />
       <Typography
         variant="h1"
         component="h1"
@@ -54,18 +62,6 @@ function Pokemons() {
       >
         Pokemons
       </Typography>
-
-      {status === "loading" && (
-        <Typography variant="h2" component="h2" align="center">
-          Loading...
-        </Typography>
-      )}
-
-      {status === "error" && (
-        <Typography variant="h2" component="h2" align="center">
-          {error.message}
-        </Typography>
-      )}
 
       <AutoSizer style={{ width: "100%", height: "100vh" }}>
         {({ height, width }: { height: number; width: number }) => {
@@ -89,4 +85,4 @@ function Pokemons() {
   );
 }
 
-export default Pokemons;
+export default PokemonsFav;

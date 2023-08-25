@@ -1,18 +1,18 @@
 import { Route, Routes } from "react-router-dom";
 import PokemonDetails from "./pages/PokemonDetails";
 import Pokemons from "./pages/Pokemons";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import PokemonsFav from "./pages/PokemonsFav";
+import QueryProvider from "./lib/QueryProvider";
+
 function App() {
-  const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
+    <QueryProvider>
       <Routes>
         <Route path="/" element={<Pokemons />} />
         <Route path="/pokemon/:pokemon" element={<PokemonDetails />} />
+        <Route path="/pokemons-fav" element={<PokemonsFav />} />
       </Routes>
-    </QueryClientProvider>
+    </QueryProvider>
   );
 }
 
