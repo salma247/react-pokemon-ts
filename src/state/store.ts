@@ -5,6 +5,11 @@ type FavoritesStore = {
   toggle: (favorite: string) => void;
 };
 
+type SearchStore = {
+    search: string;
+    setSearch: (search: string) => void;
+};
+
 export const useFavoritesStore = create<FavoritesStore>((set) => {
   // Load favorites from local storage if available
   const storedFavorites = localStorage.getItem("favorites");
@@ -27,3 +32,8 @@ export const useFavoritesStore = create<FavoritesStore>((set) => {
       }),
   };
 });
+
+export const useSearchStore = create<SearchStore>((set) => ({
+    search: "",
+    setSearch: (search) => set({ search }),
+}));

@@ -4,15 +4,17 @@ import { useQueries } from "react-query";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
-import { fetchPokemon } from "../lib/pokemonFetching";
+import Navbar from "../components/Navbar";
+import { fetchPokemon } from "../lib/axios/api";
 import { useFavoritesStore } from "../state/store";
-
-
+import { useSearchStore } from "../state/store";
 
 function PokemonsFav() {
-  const [columns, setColumns] = useState(1);
+  const [columns, setColumns] = useState(() =>
+    Math.floor(window.innerWidth / 350)
+  );
   const favoritesStore = useFavoritesStore();
-
+  const searchStore = useSearchStore();
   const favorites = favoritesStore.favorites;
 
   const queries = useQueries(
@@ -23,6 +25,9 @@ function PokemonsFav() {
   );
 
   const data = queries.map((q) => q.data);
+  const dataFiltered = data?.filter((pokemon) =>
+    pokemon?.name.includes(searchStore.search)
+  );
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -44,7 +49,7 @@ function PokemonsFav() {
 
   const renderItem = ({ columnIndex, rowIndex, style }: any) => {
     const index = rowIndex * columns + columnIndex;
-    const pokemon = data?.[index];
+    const pokemon = dataFiltered?.[index];
 
     if (!pokemon) return null;
 
@@ -53,6 +58,7 @@ function PokemonsFav() {
 
   return (
     <div style={{ backgroundColor: "#f8f8f8", height: "100vh", padding: 16 }}>
+      <Navbar />
       <Typography
         variant="h1"
         component="h1"
@@ -60,8 +66,15 @@ function PokemonsFav() {
         fontSize={32}
         gutterBottom
       >
-        Pokemons
+        Favorite Pokemons
       </Typography>
+
+      {(favorites.length === 0 || dataFiltered?.length === 0) && (
+        <Typography variant="h2" component="h2" align="center">
+            No favorites
+        </Typography>
+        )
+      }
 
       <AutoSizer style={{ width: "100%", height: "100vh" }}>
         {({ height, width }: { height: number; width: number }) => {

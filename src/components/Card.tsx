@@ -20,7 +20,7 @@ type Props = {
 function Card({ pokemon, style }: Props) {
   const favoritesStore = useFavoritesStore();
   return (
-    <MuiCard style={style}>
+    <MuiCard style={style} sx={{ maxWidth: 320, paddingX: 1, maxHeight: 90 }}> 
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <CardMedia

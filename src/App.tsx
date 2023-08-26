@@ -2,17 +2,17 @@ import { Route, Routes } from "react-router-dom";
 import PokemonDetails from "./pages/PokemonDetails";
 import Pokemons from "./pages/Pokemons";
 import PokemonsFav from "./pages/PokemonsFav";
-import QueryProvider from "./lib/QueryProvider";
+import Provider from "./lib/react-query/Provider";
 
 function App() {
   return (
-    <QueryProvider>
+    <Provider>
       <Routes>
         <Route path="/" element={<Pokemons />} />
         <Route path="/pokemon/:pokemon" element={<PokemonDetails />} />
         <Route path="/pokemons-fav" element={<PokemonsFav />} />
       </Routes>
-    </QueryProvider>
+    </Provider>
   );
 }
 

@@ -5,28 +5,31 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
-import { fetchPokemons } from "../lib/pokemonFetching";
+import { fetchPokemons } from "../lib/axios/api";
+import { useSearchStore } from "../state/store";
 
 function Pokemons() {
-  const [columns, setColumns] = useState(1);
-
-  const { data, status, error } = useQuery<TPokemons[], Error>(
-    "pokemons",
-    () => fetchPokemons(),
-    {
-      staleTime: 1000 * 60 * 5,
-    }
+  const [columns, setColumns] = useState(() =>
+    Math.floor(window.innerWidth / 350)
   );
+  const searchStore = useSearchStore();
+  const { data, status, error } = useQuery<TPokemons[], Error>("pokemons", () =>
+    fetchPokemons()
+  );
+  const dataFiltered = data?.filter((pokemon) => pokemon.name.includes(searchStore.search));
 
   useLayoutEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) {
         setColumns(1);
-      } else if (window.innerWidth < 960) {
+      }
+      else if (window.innerWidth < 960) {
         setColumns(2);
-      } else if (window.innerWidth < 1280) {
+      }
+      else if (window.innerWidth < 1280) {
         setColumns(3);
-      } else {
+      }
+      else {
         setColumns(4);
       }
     };
@@ -38,7 +41,7 @@ function Pokemons() {
 
   const renderItem = ({ columnIndex, rowIndex, style }: any) => {
     const index = rowIndex * columns + columnIndex;
-    const pokemon = data?.[index];
+    const pokemon = dataFiltered?.[index];
 
     if (!pokemon) return null;
 
@@ -70,9 +73,15 @@ function Pokemons() {
         </Typography>
       )}
 
+      {dataFiltered?.length === 0 && (
+        <Typography variant="h2" component="h2" align="center">
+          No results
+        </Typography>
+      )}
+
       <AutoSizer style={{ width: "100%", height: "100vh" }}>
         {({ height, width }: { height: number; width: number }) => {
-          const totalItems = data?.length || 0; // Use optional chaining and provide a default value
+          const totalItems = dataFiltered?.length || 0;
 
           return (
             <GridList

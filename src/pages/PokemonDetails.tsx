@@ -13,10 +13,8 @@ import {
 } from "@mui/material";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { fetchPokemon } from "../lib/pokemonFetching";
+import { fetchPokemon } from "../lib/axios/api";
 import { useFavoritesStore } from "../state/store";
-
-
 
 function PokemonDetails() {
   const pokemonName = useParams<{ pokemon: string }>().pokemon;
