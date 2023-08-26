@@ -2,6 +2,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useSearchStore } from "../state/store";
+import { useLocation } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -49,6 +50,9 @@ function Searchbar() {
   const searchStore = useSearchStore();
   const search = searchStore.search;
   const setSearch = searchStore.setSearch;
+  const location = useLocation();
+
+//   console.log(location.pathname);
 
   return (
     <Search>

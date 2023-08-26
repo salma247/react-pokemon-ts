@@ -15,6 +15,7 @@ function PokemonsFav() {
   );
   const favoritesStore = useFavoritesStore();
   const searchStore = useSearchStore();
+  //searchStore.setSearch("");
   const favorites = favoritesStore.favorites;
 
   const queries = useQueries(

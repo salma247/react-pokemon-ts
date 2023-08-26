@@ -13,23 +13,23 @@ function Pokemons() {
     Math.floor(window.innerWidth / 350)
   );
   const searchStore = useSearchStore();
+  //searchStore.setSearch("");
   const { data, status, error } = useQuery<TPokemons[], Error>("pokemons", () =>
     fetchPokemons()
   );
-  const dataFiltered = data?.filter((pokemon) => pokemon.name.includes(searchStore.search));
+  const dataFiltered = data?.filter((pokemon) =>
+    pokemon.name.includes(searchStore.search)
+  );
 
   useLayoutEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 600) {
         setColumns(1);
-      }
-      else if (window.innerWidth < 960) {
+      } else if (window.innerWidth < 960) {
         setColumns(2);
-      }
-      else if (window.innerWidth < 1280) {
+      } else if (window.innerWidth < 1280) {
         setColumns(3);
-      }
-      else {
+      } else {
         setColumns(4);
       }
     };
