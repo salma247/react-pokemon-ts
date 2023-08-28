@@ -3,7 +3,7 @@ import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { useSearchStore } from "../state/store";
 import { useLocation } from "react-router-dom";
-
+import { useEffect } from "react";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -52,7 +52,10 @@ function Searchbar() {
   const setSearch = searchStore.setSearch;
   const location = useLocation();
 
-//   console.log(location.pathname);
+  useEffect(() => {
+    setSearch("");
+    // console.log("searchbar", location);
+  }, [location, setSearch]);
 
   return (
     <Search>
