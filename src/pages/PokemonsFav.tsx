@@ -13,18 +13,21 @@ function PokemonsFav() {
   const [columns, setColumns] = useState(() =>
     Math.floor(window.innerWidth / 350)
   );
+
   const favoritesStore = useFavoritesStore();
   const searchStore = useSearchStore();
   const favorites = favoritesStore.favorites;
 
   const queries = useQueries(
-    favorites.map((pokemonName) => ({
-      queryKey: ["pokemon", pokemonName],
-      queryFn: () => fetchPokemon(pokemonName),
+    favorites.map((pokemon) => ({
+      queryKey: ["pokemon", pokemon],
+      queryFn: () => fetchPokemon(pokemon),
     }))
   );
+  const isLoading = queries.some((q) => q.isLoading);
 
   const data = queries.map((q) => q.data);
+
   const dataFiltered = data?.filter((pokemon) =>
     pokemon?.name.includes(searchStore.search)
   );
@@ -51,7 +54,12 @@ function PokemonsFav() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if (!pokemon) return <SkeletonCard style={style} />;
+    //if loading, show skeleton
+    if (isLoading) {
+      return <SkeletonCard style={style} />;
+    }
+
+    if (!pokemon) return null;
 
     return <Card key={pokemon.name} pokemon={pokemon} style={style} />;
   };

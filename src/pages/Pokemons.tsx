@@ -46,7 +46,11 @@ function Pokemons() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if (!pokemon) return <SkeletonCard style={style} />;
+    if(status.includes("loading")){
+      return <SkeletonCard style={style} />;
+    }
+
+    if (!pokemon) return null;
 
     return <Card key={pokemon.name} pokemon={pokemon} style={style} />;
   };

@@ -1,11 +1,11 @@
-import { Card, Skeleton } from "@mui/material";
+import { Skeleton } from "@mui/material";
 
 type Props = {
   style: any;
 };
 function SkeletonCard({ style }: Props) {
   return (
-    <Card style={{ ...style, padding: 16 }}>
+    <div style={{ ...style, width: 330, height: 90, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ display: "flex" }}>
         <Skeleton
           variant="circular"
@@ -19,7 +19,7 @@ function SkeletonCard({ style }: Props) {
           <Skeleton variant="text" width={200} height={15} />
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
