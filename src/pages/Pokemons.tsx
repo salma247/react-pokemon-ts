@@ -46,7 +46,7 @@ function Pokemons() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if(status.includes("loading")){
+    if(status === "loading") {
       return <SkeletonCard style={style} />;
     }
 
