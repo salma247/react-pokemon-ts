@@ -5,9 +5,9 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
+import SkeletonCard from "../components/SkeletonCard";
 import { fetchPokemon } from "../lib/axios/api";
-import { useFavoritesStore } from "../state/store";
-import { useSearchStore } from "../state/store";
+import { useFavoritesStore, useSearchStore } from "../state/store";
 
 function PokemonsFav() {
   const [columns, setColumns] = useState(() =>
@@ -51,7 +51,7 @@ function PokemonsFav() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if (!pokemon) return null;
+    if (!pokemon) return <SkeletonCard style={style} />;
 
     return <Card key={pokemon.name} pokemon={pokemon} style={style} />;
   };
@@ -71,10 +71,9 @@ function PokemonsFav() {
 
       {(favorites.length === 0 || dataFiltered?.length === 0) && (
         <Typography variant="h2" component="h2" align="center">
-            No favorites
+          No favorites
         </Typography>
-        )
-      }
+      )}
 
       <AutoSizer style={{ width: "100%", height: "100vh" }}>
         {({ height, width }: { height: number; width: number }) => {

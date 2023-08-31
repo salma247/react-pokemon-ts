@@ -5,8 +5,10 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
+import SkeletonCard from "../components/SkeletonCard";
 import { fetchPokemons } from "../lib/axios/api";
 import { useSearchStore } from "../state/store";
+
 
 function Pokemons() {
   const [columns, setColumns] = useState(() =>
@@ -15,6 +17,7 @@ function Pokemons() {
   const searchStore = useSearchStore();
   //searchStore.setSearch("");
   const { data, status, error } = useQuery<TPokemons[], Error>("pokemons", () =>
+    //skeleton test
     fetchPokemons()
   );
   const dataFiltered = data?.filter((pokemon) =>
@@ -43,7 +46,7 @@ function Pokemons() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if (!pokemon) return null;
+    if (!pokemon) return <SkeletonCard style={style} />;
 
     return <Card key={pokemon.name} pokemon={pokemon} style={style} />;
   };
@@ -61,12 +64,7 @@ function Pokemons() {
         Pokemons
       </Typography>
 
-      {status === "loading" && (
-        <Typography variant="h2" component="h2" align="center">
-          Loading...
-        </Typography>
-      )}
-
+    
       {status === "error" && (
         <Typography variant="h2" component="h2" align="center">
           {error.message}
