@@ -9,6 +9,7 @@ import { useSearchStore } from "../state/store";
 import PokemonsList from "../components/PokemonsList";
 
 function Pokemons() {
+  const limit = 1000;
   const [columns, setColumns] = useState(() =>
     Math.floor(window.innerWidth / 350)
   );
@@ -16,7 +17,7 @@ function Pokemons() {
 
   const { data, isLoading, error } = useQuery<TPokemons[], Error>(
     "pokemons",
-    () => fetchPokemons()
+    () => fetchPokemons(limit)
   );
 
   const dataFiltered = data?.filter((pokemon) =>
@@ -81,12 +82,12 @@ function Pokemons() {
       )}
 
       {isLoading && (
-        <PokemonsList renderItem={renderItemSkeleton} data={dataFiltered} columns={columns} />
+        <PokemonsList renderItem={renderItemSkeleton} data={dataFiltered} columns={columns} size={limit} />
       )}
 
 
       {!isLoading && (
-        <PokemonsList renderItem={renderItem} data={dataFiltered} columns={columns} />
+        <PokemonsList renderItem={renderItem} data={dataFiltered} columns={columns} size={limit} />
       )}
       
     </div>

@@ -86,6 +86,7 @@ function PokemonsFav() {
         renderItem={renderItem}
         data={dataFiltered}
         columns={columns}
+        size={favorites.length}
       />
     </div>
   );

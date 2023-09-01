@@ -5,21 +5,20 @@ type Props = {
     renderItem: any;
     data: any;
     columns: number;
+    size: number;
 }
 
-function PokemonsList({ renderItem, data, columns }: Props) {
+function PokemonsList({ renderItem, data, columns, size }: Props) {
   return (
     <AutoSizer style={{ width: "100%", height: "100vh" }}>
     {({ height, width }: { height: number; width: number }) => {
-      const totalItems = data?.length || 100; // Use optional chaining and provide a default value
-
       return (
         <GridList
           height={height}
           width={width}
           columnCount={columns}
           columnWidth={width / columns}
-          rowCount={Math.ceil(totalItems / columns)}
+          rowCount={Math.ceil(size / columns)}
           rowHeight={100}
         >
           {renderItem}
