@@ -1,25 +1,24 @@
 import { Typography } from "@mui/material";
 import { useLayoutEffect, useState } from "react";
 import { useQuery } from "react-query";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import SkeletonCard from "../components/SkeletonCard";
 import { fetchPokemons } from "../lib/axios/api";
 import { useSearchStore } from "../state/store";
-
+import PokemonsList from "../components/PokemonsList";
 
 function Pokemons() {
   const [columns, setColumns] = useState(() =>
     Math.floor(window.innerWidth / 350)
   );
   const searchStore = useSearchStore();
-  //searchStore.setSearch("");
-  const { data, status, error } = useQuery<TPokemons[], Error>("pokemons", () =>
-    //skeleton test
-    fetchPokemons()
+
+  const { data, isLoading, error } = useQuery<TPokemons[], Error>(
+    "pokemons",
+    () => fetchPokemons()
   );
+
   const dataFiltered = data?.filter((pokemon) =>
     pokemon.name.includes(searchStore.search)
   );
@@ -46,13 +45,14 @@ function Pokemons() {
     const index = rowIndex * columns + columnIndex;
     const pokemon = dataFiltered?.[index];
 
-    if(status === "loading") {
-      return <SkeletonCard style={style} />;
-    }
-
     if (!pokemon) return null;
 
     return <Card key={pokemon.name} pokemon={pokemon} style={style} />;
+  };
+
+  const renderItemSkeleton = ({ columnIndex, rowIndex, style }: any) => {
+    const index = rowIndex * columns + columnIndex;
+    return <SkeletonCard key={index} style={style} />;
   };
 
   return (
@@ -68,10 +68,9 @@ function Pokemons() {
         Pokemons
       </Typography>
 
-    
-      {status === "error" && (
+      {error && (
         <Typography variant="h2" component="h2" align="center">
-          {error.message}
+          Error
         </Typography>
       )}
 
@@ -81,24 +80,15 @@ function Pokemons() {
         </Typography>
       )}
 
-      <AutoSizer style={{ width: "100%", height: "100vh" }}>
-        {({ height, width }: { height: number; width: number }) => {
-          const totalItems = dataFiltered?.length || 0;
+      {isLoading && (
+        <PokemonsList renderItem={renderItemSkeleton} data={dataFiltered} columns={columns} />
+      )}
 
-          return (
-            <GridList
-              height={height}
-              width={width}
-              columnCount={columns}
-              columnWidth={width / columns}
-              rowCount={Math.ceil(totalItems / columns)}
-              rowHeight={100}
-            >
-              {renderItem}
-            </GridList>
-          );
-        }}
-      </AutoSizer>
+
+      {!isLoading && (
+        <PokemonsList renderItem={renderItem} data={dataFiltered} columns={columns} />
+      )}
+      
     </div>
   );
 }

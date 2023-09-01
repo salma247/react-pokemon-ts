@@ -1,13 +1,12 @@
 import { Typography } from "@mui/material";
 import { useLayoutEffect, useState } from "react";
 import { useQueries } from "react-query";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeGrid as GridList } from "react-window";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import SkeletonCard from "../components/SkeletonCard";
 import { fetchPokemon } from "../lib/axios/api";
 import { useFavoritesStore, useSearchStore } from "../state/store";
+import PokemonsList from "../components/PokemonsList";
 
 function PokemonsFav() {
   const [columns, setColumns] = useState(() =>
@@ -83,24 +82,11 @@ function PokemonsFav() {
         </Typography>
       )}
 
-      <AutoSizer style={{ width: "100%", height: "100vh" }}>
-        {({ height, width }: { height: number; width: number }) => {
-          const totalItems = data?.length || 0; // Use optional chaining and provide a default value
-
-          return (
-            <GridList
-              height={height}
-              width={width}
-              columnCount={columns}
-              columnWidth={width / columns}
-              rowCount={Math.ceil(totalItems / columns)}
-              rowHeight={100}
-            >
-              {renderItem}
-            </GridList>
-          );
-        }}
-      </AutoSizer>
+      <PokemonsList
+        renderItem={renderItem}
+        data={dataFiltered}
+        columns={columns}
+      />
     </div>
   );
 }
