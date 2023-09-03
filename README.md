@@ -55,3 +55,4 @@ npm run dev
 - [axios](https://axios-http.com/)
 - [react window](https://react-window.vercel.app/)
 - [react virtualized auto sizer](https://github.com/bvaughn/react-virtualized-auto-sizer#readme)
+- [zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
