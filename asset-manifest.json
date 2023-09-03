@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "/react-pokemon-ts/static/js/main.72f4c64e.js",
+    "static/js/787.ab378faf.chunk.js": "/react-pokemon-ts/static/js/787.ab378faf.chunk.js",
+    "index.html": "/react-pokemon-ts/index.html",
+    "main.72f4c64e.js.map": "/react-pokemon-ts/static/js/main.72f4c64e.js.map",
+    "787.ab378faf.chunk.js.map": "/react-pokemon-ts/static/js/787.ab378faf.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.72f4c64e.js"
+  ]
+}
